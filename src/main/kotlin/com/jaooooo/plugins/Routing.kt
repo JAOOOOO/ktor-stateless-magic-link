@@ -2,13 +2,10 @@ package com.jaooooo.plugins
 
 import com.jaooooo.services.TokenService
 import io.ktor.server.routing.*
-import io.ktor.server.response.*
 import io.ktor.server.application.*
 import io.ktor.server.html.*
 import io.ktor.server.request.*
 import io.ktor.server.util.*
-import kotlinx.css.body
-import kotlinx.css.link
 import kotlinx.html.*
 import org.jetbrains.exposed.sql.Database
 

@@ -12,7 +12,7 @@ data class ExposedUser(val email: String)
 
 @Serializable
 data class User(val id: Int, val email: String)
-class UserService(private val database: Database) {
+class UserService(database: Database) {
     object Users : Table() {
         val id = integer("id").autoIncrement()
         val email = varchar("email", length = 50)
@@ -26,7 +26,7 @@ class UserService(private val database: Database) {
         }
     }
 
-    suspend fun <T> dbQuery(block: suspend () -> T): T =
+    private suspend fun <T> dbQuery(block: suspend () -> T): T =
         newSuspendedTransaction(Dispatchers.IO) { block() }
 
     suspend fun getOrCreate(email: String): User = dbQuery {
@@ -45,13 +45,6 @@ class UserService(private val database: Database) {
 
     }
 
-    suspend fun read(id: Int): User? {
-        return dbQuery {
-            Users.select { Users.id eq id }
-                .map { User(it[Users.id], it[Users.email]) }
-                .singleOrNull()
-        }
-    }
 
     suspend fun readByEmail(email: String): User? {
         return dbQuery {
@@ -61,17 +54,5 @@ class UserService(private val database: Database) {
         }
     }
 
-    suspend fun update(id: Int, user: ExposedUser) {
-        dbQuery {
-            Users.update({ Users.id eq id }) {
-                it[email] = user.email
-            }
-        }
-    }
 
-    suspend fun delete(id: Int) {
-        dbQuery {
-            Users.deleteWhere { Users.id.eq(id) }
-        }
-    }
 }
